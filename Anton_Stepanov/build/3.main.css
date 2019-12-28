@@ -1,4 +1,11 @@
-.items-list {
-    width: 90%;
-    margin: 5%;
+.chat-name {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+.profile-link {
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }

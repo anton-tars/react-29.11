@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import {Layout} from "../components/Layout/Layout"
+import { push } from "connected-react-router";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import { createChat } from "../actions/chatActions"
+import { createChat, setChatId } from "../actions/chatActions"
 import { loadMessenger, sendMessage } from "../actions/messageActions"
 
 class MessengerContainer extends Component {
     static propTypes = {
         chatId: PropTypes.number,
+        push: PropTypes.func.isRequired,
     };
- 
-    static defaultProps = {
-        chatId: 1,
-    };
-
-    chatId = this.props.chatId;
 
     componentDidMount() {
-        this.props.loadMessenger();
+        if (Object.keys(this.props.chats).length == 0) {
+            //Load default chats
+            this.props.loadMessenger();
+        }
     }
 
     handleSendMessage = (message) => {
-        this.props.sendMessage(this.chatId, message)
+        this.props.sendMessage(this.props.chatId, message)
     }
 
     handleCreateChat = (name) => {
@@ -30,13 +29,10 @@ class MessengerContainer extends Component {
     }
 
     render() {
-        if (this.props.match.params.chatId !== undefined) {
-            this.chatId = this.props.match.params.chatId;
-        }
-
         return <Layout 
-            chatId={this.chatId}
+            chatId={this.props.chatId}
             chats={this.props.chats}
+            push={this.props.push}
             messages={this.props.messages}
             profile={this.props.profile}
             onSendMessage={this.handleSendMessage}
@@ -47,11 +43,12 @@ class MessengerContainer extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
+        chatId: state.messenger.chatId,
         chats: state.messenger.chats,
         messages: state.messenger.messages,
     }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({loadMessenger, sendMessage, createChat}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({loadMessenger, sendMessage, createChat, push, setChatId}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerContainer);

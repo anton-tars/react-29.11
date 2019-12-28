@@ -1,3 +1,4 @@
-.submitBtn, .messageTextarea, .nameInput {
-    width: 100%;
+.items-list {
+    width: 90%;
+    margin: 5%;
 }
